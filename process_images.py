@@ -23,22 +23,35 @@ def adjust_saturation(img, scale=1.5):
 def main():
     input_dir = 'input'
     output_dir = 'output'
-    
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    # Supported formats
+    valid_extensions = ('.png', '.jpg', '.jpeg', '.webp')
+
     # images that are inside the input dir will be processed then on saved to outout dir
     for filename in os.listdir(input_dir):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+        if filename.lower().endswith(valid_extensions):
             path = os.path.join(input_dir, filename)
             image = cv2.imread(path)
-            
-            if image is not None:
-                # the image will have vintage filter effect applied to it
-                processed = apply_vintage(image)
-                output_path = os.path.join(output_dir, f"processed_{filename}")
-                cv2.imwrite(output_path, processed)
-                print(f"Successfully processed {filename}")
 
-if __name__ == "__main__":
+            if image is not None:
+                name_only = os.path.splitext(filename)[0]
+
+                # Vintage
+                vintage_res = apply_vintage(image)
+                cv2.imwrite(os.path.join(output_dir, f"{name_only}_vintage.jpg"), vintage_res)
+
+                # Pencil Sketch
+                sketch_res = apply_pencil_sketch(image)
+                cv2.imwrite(os.path.join(output_dir, f"{name_only}_sketch.jpg"), sketch_res)
+
+                # Color Saturation
+                sat_res = adjust_saturation(image)
+                cv2.imwrite(os.path.join(output_dir, f"{name_only}_saturated.jpg"), sat_res)
+
+                print(f" Processed 3 versions of {filename}")
+
+if name == "main":
     main()
