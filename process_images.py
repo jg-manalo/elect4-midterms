@@ -53,5 +53,5 @@ def main():
 
                 print(f" Processed 3 versions of {filename}")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
