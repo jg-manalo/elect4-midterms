@@ -9,6 +9,17 @@ def apply_vintage(img):
     vintage = cv2.transform(img, kernel)
     return np.clip(vintage, 0, 255).astype(np.uint8)
 
+def apply_pencil_sketch(img):
+    # In this process the image will be converted into a pencil sketch
+    sketch_gray, _ = cv2.pencilSketch(img, sigma_s=60, sigma_r=0.07, shade_factor=0.05)
+    return sketch_gray
+
+def adjust_saturation(img, scale=1.5):
+    #It manipulates the saturation of the image
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype("float32")
+    hsv[:, :, 1] = np.clip(hsv[:, :, 1] * scale, 0, 255)
+    return cv2.cvtColor(hsv.astype("uint8"), cv2.COLOR_HSV2BGR)
+
 def main():
     input_dir = 'input'
     output_dir = 'output'
