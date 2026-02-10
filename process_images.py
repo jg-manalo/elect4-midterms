@@ -3,6 +3,7 @@ import numpy as np
 import os
 
 def apply_vintage(img):
+    #It adds vintage effects on the image
     kernel = np.array([[0.272, 0.534, 0.131],
                        [0.349, 0.686, 0.168],
                        [0.393, 0.769, 0.189]])
@@ -19,6 +20,20 @@ def adjust_saturation(img, scale=1.5):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype("float32")
     hsv[:, :, 1] = np.clip(hsv[:, :, 1] * scale, 0, 255)
     return cv2.cvtColor(hsv.astype("uint8"), cv2.COLOR_HSV2BGR)
+
+def inject_noise(img):
+    #The output of the image will have pepper like design
+    row, col, ch = img.shape
+    gauss = np.random.normal(0, 30, (row, col, ch))
+    noisy = img + gauss
+    return np.clip(noisy, 0, 255).astype(np.uint8)
+
+def motion_blur(img, kernel_size=15):
+    #This process add a motion blur effect to the image
+    kernel = np.zeros((kernel_size, kernel_size))
+    kernel[int((kernel_size - 1)/2), :] = np.ones(kernel_size)
+    kernel /= kernel_size
+    return cv2.filter2D(img, -1, kernel)
 
 def main():
     input_dir = 'input'
@@ -51,7 +66,16 @@ def main():
                 sat_res = adjust_saturation(image)
                 cv2.imwrite(os.path.join(output_dir, f"{name_only}_saturated.jpg"), sat_res)
 
-                print(f" Processed 3 versions of {filename}")
+                # Noise Injection
+                noise_res = inject_noise(image)
+                cv2.imwrite(os.path.join(output_dir, f"{name_only}_noisy.jpg"), noise_res)
+
+                # Motion Blur
+                blur_res = motion_blur(image)
+                cv2.imwrite(os.path.join(output_dir, f"{name_only}_blur.jpg"), blur_res)
+
+                print(f" Successfully processed 5 versions of {filename}")
+
 
 if __name__ == "__main__":
     main()
