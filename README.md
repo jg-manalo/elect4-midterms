@@ -35,7 +35,7 @@ To contribute to the code or run the full test suite, you need the development e
     ```
     pip install -r requirements.txt
     ```
-    *Required Libraries:* `opencv-python`, `numpy`, `pytest`.
+    *Required Libraries:* `opencv-python-headless`, `numpy`, `pytest`.
 
 2.  **Run Automated Tests:**
     Validate that the system is working correctly by running the test suite:
